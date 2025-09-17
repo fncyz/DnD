@@ -33,6 +33,6 @@ function AuthGate({ children }) {
       </View>
     );
   }
-
+///
   return children;
 }
