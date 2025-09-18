@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Button, Alert, TextInput, Modal } from "react-native";
+import { View, Text, FlatList, StyleSheet, Button, Alert, TextInput, Modal, ActivityIndicator } from "react-native";
 import { db } from "../../firebaseConfig";
 import { collection, onSnapshot, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../auth/authContext";
 
-
 export default function CommunityFeed() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();  // Add loading
   const [posts, setPosts] = useState([]);
   const [editingPost, setEditingPost] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [newContent, setNewContent] = useState("");
 
-  // Fetch all posts
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
       const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -21,7 +19,6 @@ export default function CommunityFeed() {
     return unsubscribe;
   }, []);
 
-  // Delete post
   const handleDelete = (post) => {
     Alert.alert("Delete Post", "Are you sure?", [
       { text: "Cancel", style: "cancel" },
@@ -29,14 +26,12 @@ export default function CommunityFeed() {
     ]);
   };
 
-  // Start editing
   const handleEdit = (post) => {
     setEditingPost(post);
     setNewContent(post.content);
     setModalVisible(true);
   };
 
-  // Save edited post
   const saveEdit = async () => {
     if (!newContent.trim()) return;
     await updateDoc(doc(db, "posts", editingPost.id), { content: newContent });
@@ -44,6 +39,24 @@ export default function CommunityFeed() {
     setEditingPost(null);
     setNewContent("");
   };
+
+  // Show loading indicator while auth state is being checked
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#924b4bff" />
+      </View>
+    );
+  }
+
+  // Show message if user is not logged in
+  if (!user) {
+    return (
+      <View style={styles.centeredContainer}>
+        <Text style={styles.loginPrompt}>You must be logged in to see the community feed.</Text>
+      </View>
+    );
+  }
 
   const renderItem = ({ item }) => (
     <View style={styles.post}>
@@ -60,7 +73,6 @@ export default function CommunityFeed() {
   );
 
   return (
-
     <View style={styles.container}>
       <FlatList
         data={posts}
@@ -69,7 +81,6 @@ export default function CommunityFeed() {
         contentContainerStyle={{ padding: 20 }}
       />
 
-      {/* Modal for editing */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -86,14 +97,13 @@ export default function CommunityFeed() {
         </View>
       </Modal>
     </View>
-
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffffff", // black background (matches your logo scheme)
+    backgroundColor: "#ffffffff",
     paddingTop: 20,
   },
   post: {
@@ -102,19 +112,60 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#745b5bff",
     borderRadius: 8,
-    backgroundColor: "#fff", // card style
+    backgroundColor: "#fff",
   },
-  quote: { fontSize: 16, fontStyle: "italic", marginBottom: 8, color: "#333" },
-  username: { fontSize: 14, fontWeight: "bold", alignSelf: "flex-end", color: "#9b6b72" },
-  actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 10 },
-  modalContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(79, 76, 76, 0.5)" },
-  modalContent: { width: "90%", padding: 20, backgroundColor: "hsla(0, 0%, 100%, 1.00)", borderRadius: 10, color: "#000000ff"},
+  quote: {
+    fontSize: 16,
+    fontStyle: "italic",
+    marginBottom: 8,
+    color: "#333",
+  },
+  username: {
+    fontSize: 14,
+    fontWeight: "bold",
+    alignSelf: "flex-end",
+    color: "#9b6b72",
+  },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(79, 76, 76, 0.5)",
+  },
+  modalContent: {
+    width: "90%",
+    padding: 20,
+    backgroundColor: "hsla(0, 0%, 100%, 1.00)",
+    borderRadius: 10,
+    color: "#000000ff",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#f08d8dff",
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
-    color: "black", // <-- text color white
+    color: "black",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  loginPrompt: {
+    fontSize: 16,
+    color: "#924b4bff",
+    textAlign: "center",
   },
 });
