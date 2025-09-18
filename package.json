@@ -1,5 +1,5 @@
 {
-  "name": "my-goals",
+  "name": "dnd",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -15,8 +15,8 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo/vector-icons": "^14.0.2",
-    "@react-navigation/bottom-tabs": "^7.2.0",
+    "@expo/vector-icons": "^14.1.0",
+    "@react-navigation/bottom-tabs": "^7.4.7",
     "@react-navigation/native": "^7.0.14",
     "expo": "^53.0.8",
     "expo-blur": "~14.1.4",

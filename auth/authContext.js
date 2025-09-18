@@ -17,18 +17,16 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      throw error;
-    }
+    await signInWithEmailAndPassword(auth, email, password);
   };
 
   const logout = async () => {
     try {
       await signOut(auth);
+      setUser(null); // clear user on logout
+      // ⚡️ no router here, navigation handled in screens
     } catch (error) {
-      throw error;
+      console.log("Error logging out:", error.message);
     }
   };
 

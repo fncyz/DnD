@@ -1,25 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "../auth/authContext";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
-export default function SignupScreen() {
+export default function SignUpScreen() {
   const router = useRouter();
+  const { user } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
-  const handleSignup = async () => {
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+  // Automatically redirect if already logged in
+  useEffect(() => {
+    if (user) router.replace("/drive/index");
+  }, [user]);
+
+  const handleSignUp = async () => {
+    if (!displayName.trim()) {
+      Alert.alert("Error", "Please enter a display name");
       return;
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      Alert.alert("Success", "Account created!");
-      router.replace("/drive"); // ✅ go to dashboard after signup
+      // Create user in Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const currentUser = userCredential.user;
+
+      // Update display name
+      await updateProfile(currentUser, { displayName });
+
+      Alert.alert("Success", "Account created successfully!");
+      router.replace("/drive"); // Redirect after signup
     } catch (error) {
       Alert.alert("Signup Error", error.message);
     }
@@ -28,6 +42,13 @@ export default function SignupScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Display Name"
+        value={displayName}
+        onChangeText={setDisplayName}
+      />
 
       <TextInput
         style={styles.input}
@@ -45,19 +66,11 @@ export default function SignupScreen() {
         secureTextEntry
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Create Account</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.replace("/")}>
+      <TouchableOpacity onPress={() => router.push("/")}>
         <Text style={styles.link}>Already have an account? Log In</Text>
       </TouchableOpacity>
     </View>
@@ -66,9 +79,9 @@ export default function SignupScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center", color: "#c9a5aaff" },
   input: { borderWidth: 1, borderColor: "#ccc", padding: 12, borderRadius: 8, marginBottom: 12 },
-  button: { backgroundColor: "#3498db", padding: 15, borderRadius: 8, alignItems: "center" },
+  button: { backgroundColor: "#9b6b72", padding: 15, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "#fff", fontWeight: "bold" },
-  link: { color: "#2980b9", marginTop: 15, textAlign: "center" },
+  link: { color: "#bd878fff", marginTop: 15, textAlign: "center" },
 });

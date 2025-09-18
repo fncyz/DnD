@@ -1,66 +1,69 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import { useRouter } from "expo-router";
-import { db } from "../../firebaseConfig"; // correct path from /app/drive/
+import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { db } from "../../firebaseConfig";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../../auth/authContext";
 
 export default function CreatePost() {
-  const router = useRouter();
+  const [content, setContent] = useState("");
   const { user } = useAuth();
-  const [quote, setQuote] = useState("");
 
-  const handlePost = async () => {
-    if (!quote.trim()) {
-      Alert.alert("Error", "Quote cannot be empty");
-      return;
-    }
+ const handleCreatePost = async () => {
+  if (!user) {
+    Alert.alert("Error", "You must be logged in to create a post.");
+    return;
+  }
 
-    if (!user) {
-      Alert.alert("Error", "You must be logged in to post.");
-      console.error("CreatePost error: user is null");
-      return;
-    }
+  if (!content.trim()) {
+    Alert.alert("Error", "Post cannot be empty.");
+    return;
+  }
 
-    console.log("Posting quote:", quote, "by user:", user.uid);
-
-    try {
-      await addDoc(collection(db, "posts"), {
-        quote: quote.trim(),
-        authorId: user.uid,
-        createdAt: serverTimestamp(),
-      });
-      console.log("Quote posted successfully!");
-      Alert.alert("Success", "Quote posted!");
-      setQuote("");
-      router.push("/drive/feed"); // redirect to Community Feed
-    } catch (error) {
-      console.error("Error posting quote:", error);
-      Alert.alert("Error", error.message);
-    }
-  };
+  try {
+    await addDoc(collection(db, "posts"), {
+      content,
+      uid: user.uid,
+      username: user.displayName || "Anonymous",
+      createdAt: serverTimestamp(),
+    });
+    Alert.alert("Success", "Post created!");
+    setContent("");
+  } catch (error) {
+    Alert.alert("Error", error.message);
+  }
+};
 
   return (
+
     <View style={styles.container}>
-      <Text style={styles.title}>Add a Quote</Text>
       <TextInput
         style={styles.input}
         placeholder="Write your motivational quote..."
-        value={quote}
-        onChangeText={setQuote}
+        placeholderTextColor="#999"
+        value={content}
+        onChangeText={setContent}
         multiline
       />
-      <TouchableOpacity style={styles.button} onPress={handlePost}>
-        <Text style={styles.buttonText}>Post Quote</Text>
-      </TouchableOpacity>
+      <Button title="Post" color="#cc7d7dff" onPress={handleCreatePost} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", padding: 12, borderRadius: 8, marginBottom: 12, minHeight: 80, textAlignVertical: "top" },
-  button: { backgroundColor: "#3498db", padding: 15, borderRadius: 8, alignItems: "center" },
-  buttonText: { color: "#fff", fontWeight: "bold" },
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffffff", // matches feed + myFeed
+    padding: 20,
+    justifyContent: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#f08d8dff", // matches input border color in feeds
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: "rgba(255, 255, 255, 0.7)", // transparent effect
+    color: "#333", // text color
+    fontSize: 16,
+  },
 });

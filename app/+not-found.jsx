@@ -22,27 +22,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffffff", // matches feed background
   },
   title: {
     fontSize: 60,
     fontWeight: "bold",
-    color: "#21cc8d",
+    color: "#743945ff", // theme dark red
   },
   message: {
     fontSize: 18,
-    color: "#555",
+    color: "#333", // matches text in feeds
     marginVertical: 20,
     textAlign: "center",
   },
   button: {
-    padding: 15,
-    backgroundColor: "#21cc8d",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: "#cc7d7dff", // theme button color
     borderRadius: 8,
     marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   buttonText: {
-    color: "white",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
