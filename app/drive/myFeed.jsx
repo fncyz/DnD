@@ -91,6 +91,8 @@ export default function MyFeed() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>My Personal Feed</Text>
+
       <View style={styles.logoutContainer}>
         <Button title="Logout" color="#6d2e2eff" onPress={handleLogout} />
       </View>
@@ -122,22 +124,32 @@ export default function MyFeed() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#ffffffff", paddingTop: 20 },
-  logoutContainer: { padding: 10, backgroundColor: "#ffffffff", alignItems: "flex-end" },
+  container: { flex: 1, backgroundColor: "#000000ff", paddingTop: 40 },
+  title: {
+    fontSize: 30 ,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    marginBottom: 10,
+    borderBottomWidth: 3,
+    borderBottomColor: "#745b5bff",
+  },
+  logoutContainer: { padding: 10, backgroundColor: "#000000ff", alignItems: "flex-end" },
   post: {
     marginBottom: 20,
     padding: 15,
     borderWidth: 1,
     borderColor: "#745b5bff",
     borderRadius: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    backgroundColor: "#000000",
+    color: "white",
   },
-  quote: { fontSize: 16, fontStyle: "italic", marginBottom: 8, color: "#333" },
+  quote: { fontSize: 16, fontStyle: "italic", marginBottom: 8, color: "#ffffffff" },
   username: { fontSize: 14, fontWeight: "bold", alignSelf: "flex-end", color: "#9b6b72" },
   actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 10 },
   modalContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(79, 76, 76, 0.5)" },
-  modalContent: { width: "90%", padding: 20, backgroundColor: "hsla(0, 100%, 99%, 1)", borderRadius: 10 },
-  input: { borderWidth: 1, borderColor: "#f08d8dff", borderRadius: 8, padding: 10, marginBottom: 10, color: "#333" },
+  modalContent: { width: "90%", padding: 20, backgroundColor: "#000000", borderRadius: 10, color: "white" },
+  input: { borderWidth: 1, borderColor: "#f08d8dff", borderRadius: 8, padding: 10, marginBottom: 10, color: "#ffffffff" },
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   centeredContainer: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
   loginPrompt: { fontSize: 16, color: "#924b4bff", textAlign: "center" },

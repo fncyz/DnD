@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#ffffffff", // matches feed background
+    backgroundColor: "#000000ff", // matches feed background
   },
   title: {
     fontSize: 60,

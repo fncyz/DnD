@@ -5,7 +5,7 @@ import { collection, onSnapshot, doc, deleteDoc, updateDoc } from "firebase/fire
 import { useAuth } from "../../auth/authContext";
 
 export default function CommunityFeed() {
-  const { user, loading } = useAuth();  // Add loading
+  const { user, loading } = useAuth();  
   const [posts, setPosts] = useState([]);
   const [editingPost, setEditingPost] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,7 +40,6 @@ export default function CommunityFeed() {
     setNewContent("");
   };
 
-  // Show loading indicator while auth state is being checked
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -49,7 +48,6 @@ export default function CommunityFeed() {
     );
   }
 
-  // Show message if user is not logged in
   if (!user) {
     return (
       <View style={styles.centeredContainer}>
@@ -74,6 +72,11 @@ export default function CommunityFeed() {
 
   return (
     <View style={styles.container}>
+      {/* Title/Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Community Feed</Text>
+      </View>
+
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
@@ -103,8 +106,19 @@ export default function CommunityFeed() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffffff",
+    backgroundColor: "#000000ff",
     paddingTop: 20,
+  },
+  header: {
+    padding: 15,
+    alignItems: "center",
+    borderBottomWidth: 3,
+    borderBottomColor: "#745b5bff",
+  },
+  headerTitle: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#ffffffff",
   },
   post: {
     marginBottom: 20,
@@ -112,13 +126,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#745b5bff",
     borderRadius: 8,
-    backgroundColor: "#fff",
+    backgroundColor: "#000000ff",
   },
   quote: {
     fontSize: 16,
     fontStyle: "italic",
     marginBottom: 8,
-    color: "#333",
+    color: "#ffffffff",
   },
   username: {
     fontSize: 14,

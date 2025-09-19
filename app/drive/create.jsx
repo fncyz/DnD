@@ -56,7 +56,7 @@ export default function CreatePost() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffffff", // matches feed + myFeed
+    backgroundColor: "#000000ff", // matches feed + myFeed
     padding: 20,
     justifyContent: "center",
   },
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    color: "#333",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    color: "#ffffffff",
     fontSize: 16,
   },
 });

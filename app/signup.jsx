@@ -45,6 +45,7 @@ export default function SignUpScreen() {
 
       <TextInput
         style={styles.input}
+        placeholderTextColor="#FFFFFF"
         placeholder="Display Name"
         value={displayName}
         onChangeText={setDisplayName}
@@ -52,6 +53,7 @@ export default function SignUpScreen() {
 
       <TextInput
         style={styles.input}
+        placeholderTextColor="#FFFFFF"
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
@@ -60,6 +62,7 @@ export default function SignUpScreen() {
 
       <TextInput
         style={styles.input}
+        placeholderTextColor="#FFFFFF"
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
@@ -78,9 +81,9 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#fff" },
+  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#000000ff" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center", color: "#c9a5aaff" },
-  input: { borderWidth: 1, borderColor: "#ccc", padding: 12, borderRadius: 8, marginBottom: 12 },
+  input: { borderWidth: 1, borderColor: "#ccc", padding: 12, borderRadius: 8, marginBottom: 12, color: "white" },
   button: { backgroundColor: "#9b6b72", padding: 15, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "#fff", fontWeight: "bold" },
   link: { color: "#bd878fff", marginTop: 15, textAlign: "center" },

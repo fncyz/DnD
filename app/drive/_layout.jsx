@@ -27,11 +27,11 @@ export default function DriveTabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarActiveTintColor: "#924b4bff",
         tabBarInactiveTintColor: "#d08b8bff",
         tabBarStyle: {
-          backgroundColor: "#fffefeff",
+          backgroundColor: "#000000ff",
         },
       }}
     >
@@ -60,6 +60,12 @@ export default function DriveTabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add-circle-outline" size={size} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
