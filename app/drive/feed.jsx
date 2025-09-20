@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
   header: {
     padding: 15,
     alignItems: "center",
+    marginTop:15,
     borderBottomWidth: 3,
     borderBottomColor: "#745b5bff",
   },
