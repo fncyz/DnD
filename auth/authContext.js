@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth } from "../firebaseConfig"; // ✅ correct relative path
 
 const AuthContext = createContext();
 
@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
@@ -16,17 +17,18 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  // Login function
   const login = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
+  // Logout function
   const logout = async () => {
     try {
       await signOut(auth);
-      setUser(null); // clear user on logout
-      // ⚡️ no router here, navigation handled in screens
+      setUser(null); // clear user after signout
     } catch (error) {
-      console.log("Error logging out:", error.message);
+      console.error("Error logging out:", error.message);
     }
   };
 

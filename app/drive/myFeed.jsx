@@ -1,35 +1,76 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, Text, StyleSheet, Button, Alert, TextInput, Modal, ActivityIndicator } from "react-native";
-import { db } from "../../firebaseConfig";
-import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import {
+  View,
+  FlatList,
+  Text,
+  StyleSheet,
+  Button,
+  TextInput,
+  Modal,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
+import { db } from "../../firebaseConfig"; // ✅ adjust path if needed
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { useAuth } from "../../auth/authContext";
 
+
+// ✅ Works on both mobile & web
+const confirmAction = (message, onConfirm) => {
+  if (Platform.OS === "web") {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  } else {
+    // React Native Alert
+    import("react-native").then(({ Alert }) =>
+      Alert.alert("Confirm", message, [
+        { text: "Cancel", style: "cancel" },
+        { text: "OK", onPress: onConfirm },
+      ])
+    );
+  }
+};
+
 export default function MyFeed() {
-  const { user, loading, logout } = useAuth();  // added loading
+  const { user, loading, logout } = useAuth();
   const [posts, setPosts] = useState([]);
   const [editingPost, setEditingPost] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [newContent, setNewContent] = useState("");
 
+  // Load only this user's posts
   useEffect(() => {
-    if (!user) return; // guard null user
-
+    if (!user) return;
     const q = query(collection(db, "posts"), where("uid", "==", user.uid));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setPosts(data.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds));
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPosts(
+        data.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds)
+      );
     });
-
     return unsubscribe;
   }, [user]);
 
+  // Delete post
   const handleDelete = (post) => {
-    Alert.alert("Delete Post", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: async () => await deleteDoc(doc(db, "posts", post.id)) },
-    ]);
+    confirmAction("Are you sure you want to delete this post?", async () => {
+      await deleteDoc(doc(db, "posts", post.id));
+    });
   };
 
+  // Edit post
   const handleEdit = (post) => {
     setEditingPost(post);
     setNewContent(post.content);
@@ -38,27 +79,23 @@ export default function MyFeed() {
 
   const saveEdit = async () => {
     if (!newContent.trim()) return;
-    await updateDoc(doc(db, "posts", editingPost.id), { content: newContent });
+    await updateDoc(doc(db, "posts", editingPost.id), {
+      content: newContent,
+    });
     setModalVisible(false);
     setEditingPost(null);
     setNewContent("");
   };
 
-  const handleLogout = async () => {
-    Alert.alert("Logout", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await logout();
-          } catch (err) {
-            console.error("Logout failed:", err.message);
-          }
-        },
-      },
-    ]);
+  // Logout
+  const handleLogout = () => {
+    confirmAction("Are you sure you want to log out?", async () => {
+      try {
+        await logout();
+      } catch (err) {
+        console.error("Logout failed:", err.message);
+      }
+    });
   };
 
   if (loading) {
@@ -72,8 +109,9 @@ export default function MyFeed() {
   if (!user) {
     return (
       <View style={styles.centeredContainer}>
-        <Text style={styles.loginPrompt}>You must be logged in to view your posts.</Text>
-        {/* You could add a button here to navigate to login if desired */}
+        <Text style={styles.loginPrompt}>
+          You must be logged in to view your posts.
+        </Text>
       </View>
     );
   }
@@ -104,6 +142,7 @@ export default function MyFeed() {
         contentContainerStyle={{ padding: 20 }}
       />
 
+      {/* Edit Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -115,7 +154,11 @@ export default function MyFeed() {
               placeholderTextColor="#999"
             />
             <Button title="Save" color="#cc7d7dff" onPress={saveEdit} />
-            <Button title="Cancel" color="#6d2e2eff" onPress={() => setModalVisible(false)} />
+            <Button
+              title="Cancel"
+              color="#6d2e2eff"
+              onPress={() => setModalVisible(false)}
+            />
           </View>
         </View>
       </Modal>
@@ -126,7 +169,7 @@ export default function MyFeed() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000000ff", paddingTop: 40 },
   title: {
-    fontSize: 30 ,
+    fontSize: 28,
     fontWeight: "bold",
     color: "white",
     textAlign: "center",
@@ -134,7 +177,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     borderBottomColor: "#745b5bff",
   },
-  logoutContainer: { padding: 10, backgroundColor: "#000000ff", alignItems: "flex-end" },
+  logoutContainer: {
+    padding: 10,
+    backgroundColor: "#000000ff",
+    alignItems: "flex-end",
+  },
   post: {
     marginBottom: 20,
     padding: 15,
@@ -142,15 +189,50 @@ const styles = StyleSheet.create({
     borderColor: "#745b5bff",
     borderRadius: 8,
     backgroundColor: "#000000",
-    color: "white",
   },
-  quote: { fontSize: 16, fontStyle: "italic", marginBottom: 8, color: "#ffffffff" },
-  username: { fontSize: 14, fontWeight: "bold", alignSelf: "flex-end", color: "#9b6b72" },
-  actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 10 },
-  modalContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(79, 76, 76, 0.5)" },
-  modalContent: { width: "90%", padding: 20, backgroundColor: "#000000", borderRadius: 10, color: "white" },
-  input: { borderWidth: 1, borderColor: "#f08d8dff", borderRadius: 8, padding: 10, marginBottom: 10, color: "#ffffffff" },
+  quote: {
+    fontSize: 16,
+    fontStyle: "italic",
+    marginBottom: 8,
+    color: "#ffffffff",
+  },
+  username: {
+    fontSize: 14,
+    fontWeight: "bold",
+    alignSelf: "flex-end",
+    color: "#9b6b72",
+  },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(79, 76, 76, 0.5)",
+  },
+  modalContent: {
+    width: "90%",
+    padding: 20,
+    backgroundColor: "#000000",
+    borderRadius: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#f08d8dff",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    color: "#ffffffff",
+  },
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  centeredContainer: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
   loginPrompt: { fontSize: 16, color: "#924b4bff", textAlign: "center" },
 });
