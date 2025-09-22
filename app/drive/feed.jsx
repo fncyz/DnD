@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Button, Alert, TextInput, Modal, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, StyleSheet, Button, Alert, TextInput, Modal, ActivityIndicator, Platform } from "react-native";
 import { db } from "../../firebaseConfig";
 import { collection, onSnapshot, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../auth/authContext";
@@ -19,11 +19,26 @@ export default function CommunityFeed() {
     return unsubscribe;
   }, []);
 
-  const handleDelete = (post) => {
-    Alert.alert("Delete Post", "Are you sure?", [
+  const confirmAction = (message, onConfirm) => {
+  if (Platform.OS === "web") {
+    // Use browser confirm dialog
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  } else {
+    // Use native alert on mobile
+    Alert.alert("Confirm", message, [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: async () => await deleteDoc(doc(db, "posts", post.id)) },
+      { text: "OK", onPress: onConfirm },
     ]);
+  }
+};
+
+
+  const handleDelete = (post) => {
+    confirmAction("Are you sure you want to delete this post?", async () => {
+      await deleteDoc(doc(db, "posts", post.id));
+    });
   };
 
   const handleEdit = (post) => {
@@ -155,7 +170,7 @@ const styles = StyleSheet.create({
   modalContent: {
     width: "90%",
     padding: 20,
-    backgroundColor: "hsla(0, 0%, 100%, 1.00)",
+    backgroundColor: "black",
     borderRadius: 10,
     color: "#000000ff",
   },
@@ -165,7 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
-    color: "black",
+    color: "white",
   },
   loadingContainer: {
     flex: 1,

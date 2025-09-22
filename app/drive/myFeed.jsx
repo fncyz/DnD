@@ -26,7 +26,7 @@ import { useAuth } from "../../auth/authContext";
 // ✅ Works on both mobile & web
 const confirmAction = (message, onConfirm) => {
   if (Platform.OS === "web") {
-    if (window.confirm(message)) {
+    if (window.confirm(message)) { 
       onConfirm();
     }
   } else {
