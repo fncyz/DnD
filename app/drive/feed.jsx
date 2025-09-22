@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Button, Alert, TextInput, Modal, ActivityIndicator, Platform } from "react-native";
+import { View, Text, FlatList, StyleSheet, Button, Alert, TextInput, Modal, ActivityIndicator, Platform, ScrollView } from "react-native";
 import { db } from "../../firebaseConfig";
 import { collection, onSnapshot, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../auth/authContext";
@@ -96,7 +96,8 @@ export default function CommunityFeed() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
       />
 
       <Modal visible={modalVisible} animationType="slide" transparent>
@@ -108,9 +109,12 @@ export default function CommunityFeed() {
               onChangeText={setNewContent}
               placeholder="Edit your post"
               placeholderTextColor="#999"
+              multiline
             />
-            <Button title="Save" color="#cc7d7dff" onPress={saveEdit} />
-            <Button title="Cancel" color="#6d2e2eff" onPress={() => setModalVisible(false)} />
+            <View style={styles.modalButtons}>
+              <Button title="Save" color="#cc7d7dff" onPress={saveEdit} />
+              <Button title="Cancel" color="#6d2e2eff" onPress={() => setModalVisible(false)} />
+            </View>
           </View>
         </View>
       </Modal>
@@ -123,11 +127,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000ff",
     paddingTop: 20,
+    ...(Platform.OS === 'web' && {
+      maxWidth: 800,
+      marginHorizontal: 'auto',
+      width: '100%',
+    }),
   },
   header: {
     padding: 15,
     alignItems: "center",
-    marginTop:15,
+    marginTop: 15,
     borderBottomWidth: 3,
     borderBottomColor: "#745b5bff",
   },
@@ -136,6 +145,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#ffffffff",
   },
+  listContainer: {
+    padding: 20,
+    ...(Platform.OS === 'web' && {
+      paddingHorizontal: 40,
+    }),
+  },
   post: {
     marginBottom: 20,
     padding: 15,
@@ -143,12 +158,20 @@ const styles = StyleSheet.create({
     borderColor: "#745b5bff",
     borderRadius: 8,
     backgroundColor: "#000000ff",
+    ...(Platform.OS === 'web' && {
+      maxWidth: '100%',
+      wordWrap: 'break-word',
+    }),
   },
   quote: {
     fontSize: 16,
     fontStyle: "italic",
     marginBottom: 8,
     color: "#ffffffff",
+    ...(Platform.OS === 'web' && {
+      wordWrap: 'break-word',
+      overflowWrap: 'break-word',
+    }),
   },
   username: {
     fontSize: 14,
@@ -160,19 +183,44 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+    ...(Platform.OS === 'web' && {
+      flexWrap: 'wrap',
+      gap: 10,
+    }),
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(79, 76, 76, 0.5)",
+    ...(Platform.OS === 'web' && {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    }),
   },
   modalContent: {
     width: "90%",
+    maxWidth: 500,
     padding: 20,
     backgroundColor: "black",
     borderRadius: 10,
     color: "#000000ff",
+    ...(Platform.OS === 'web' && {
+      maxHeight: '80vh',
+      overflow: 'auto',
+    }),
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 10,
+    ...(Platform.OS === 'web' && {
+      flexWrap: 'wrap',
+      gap: 10,
+    }),
   },
   input: {
     borderWidth: 1,
@@ -181,6 +229,10 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     color: "white",
+    ...(Platform.OS === 'web' && {
+      minHeight: 100,
+      resize: 'vertical',
+    }),
   },
   loadingContainer: {
     flex: 1,

@@ -2,7 +2,7 @@ import { Tabs, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../auth/authContext";
 import { useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Platform, StyleSheet } from "react-native";
 
 export default function DriveTabLayout() {
   const { user, loading } = useAuth();
@@ -18,23 +18,24 @@ export default function DriveTabLayout() {
   if (loading) {
     // while checking auth state
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#924b4bff" />
       </View>
     );
   }
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: "#924b4bff",
-        tabBarInactiveTintColor: "#d08b8bff",
-        tabBarStyle: {
-          backgroundColor: "#000000ff",
-        },
-      }}
-    >
+    <View style={styles.container}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: "#924b4bff",
+          tabBarInactiveTintColor: "#d08b8bff",
+          tabBarStyle: {
+            backgroundColor: "#000000ff",
+          },
+        }}
+      >
       <Tabs.Screen
         name="feed"
         options={{
@@ -68,7 +69,28 @@ export default function DriveTabLayout() {
           href: null,
         }}
       />
-    </Tabs>
+      </Tabs>
+    </View>
   );
 }
-//
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    ...(Platform.OS === 'web' && {
+      maxWidth: 1200,
+      marginHorizontal: 'auto',
+      width: '100%',
+    }),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    ...(Platform.OS === 'web' && {
+      maxWidth: 1200,
+      marginHorizontal: 'auto',
+      width: '100%',
+    }),
+  },
+});

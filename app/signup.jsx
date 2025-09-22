@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../auth/authContext";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
@@ -81,11 +81,46 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#000000ff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center", color: "#c9a5aaff" },
-  input: { borderWidth: 1, borderColor: "#ccc", padding: 12, borderRadius: 8, marginBottom: 12, color: "white" },
-  button: { backgroundColor: "#9b6b72", padding: 15, borderRadius: 8, alignItems: "center" },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  link: { color: "#bd878fff", marginTop: 15, textAlign: "center" },
+  container: { 
+    flex: 1, 
+    justifyContent: "center", 
+    padding: 20, 
+    backgroundColor: "#000000ff",
+    ...(Platform.OS === 'web' && {
+      maxWidth: 500,
+      marginHorizontal: 'auto',
+      width: '100%',
+    }),
+  },
+  title: { 
+    fontSize: 24, 
+    fontWeight: "bold", 
+    marginBottom: 20, 
+    textAlign: "center", 
+    color: "#c9a5aaff" 
+  },
+  input: { 
+    borderWidth: 1, 
+    borderColor: "#ccc", 
+    padding: 12, 
+    borderRadius: 8, 
+    marginBottom: 12, 
+    color: "white" 
+  },
+  button: { 
+    backgroundColor: "#9b6b72", 
+    padding: 15, 
+    borderRadius: 8, 
+    alignItems: "center" 
+  },
+  buttonText: { 
+    color: "#fff", 
+    fontWeight: "bold" 
+  },
+  link: { 
+    color: "#bd878fff", 
+    marginTop: 15, 
+    textAlign: "center" 
+  },
 });
 

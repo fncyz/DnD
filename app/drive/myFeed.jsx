@@ -9,6 +9,7 @@ import {
   Modal,
   ActivityIndicator,
   Platform,
+  ScrollView,
 } from "react-native";
 import { db } from "../../firebaseConfig"; // ✅ adjust path if needed
 import {
@@ -139,7 +140,8 @@ export default function MyFeed() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
       />
 
       {/* Edit Modal */}
@@ -153,12 +155,14 @@ export default function MyFeed() {
               placeholder="Edit your post"
               placeholderTextColor="#999"
             />
-            <Button title="Save" color="#cc7d7dff" onPress={saveEdit} />
-            <Button
-              title="Cancel"
-              color="#6d2e2eff"
-              onPress={() => setModalVisible(false)}
-            />
+            <View style={styles.modalButtons}>
+              <Button title="Save" color="#cc7d7dff" onPress={saveEdit} />
+              <Button
+                title="Cancel"
+                color="#6d2e2eff"
+                onPress={() => setModalVisible(false)}
+              />
+            </View>
           </View>
         </View>
       </Modal>
@@ -167,7 +171,16 @@ export default function MyFeed() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000000ff", paddingTop: 40 },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#000000ff", 
+    paddingTop: 40,
+    ...(Platform.OS === 'web' && {
+      maxWidth: 800,
+      marginHorizontal: 'auto',
+      width: '100%',
+    }),
+  },
   title: {
     fontSize: 28,
     fontWeight: "bold",
@@ -182,6 +195,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#000000ff",
     alignItems: "flex-end",
   },
+  listContainer: {
+    padding: 20,
+    ...(Platform.OS === 'web' && {
+      paddingHorizontal: 40,
+    }),
+  },
   post: {
     marginBottom: 20,
     padding: 15,
@@ -189,12 +208,20 @@ const styles = StyleSheet.create({
     borderColor: "#745b5bff",
     borderRadius: 8,
     backgroundColor: "#000000",
+    ...(Platform.OS === 'web' && {
+      maxWidth: '100%',
+      wordWrap: 'break-word',
+    }),
   },
   quote: {
     fontSize: 16,
     fontStyle: "italic",
     marginBottom: 8,
     color: "#ffffffff",
+    ...(Platform.OS === 'web' && {
+      wordWrap: 'break-word',
+      overflowWrap: 'break-word',
+    }),
   },
   username: {
     fontSize: 14,
@@ -206,18 +233,43 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+    ...(Platform.OS === 'web' && {
+      flexWrap: 'wrap',
+      gap: 10,
+    }),
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(79, 76, 76, 0.5)",
+    ...(Platform.OS === 'web' && {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    }),
   },
   modalContent: {
     width: "90%",
+    maxWidth: 500,
     padding: 20,
     backgroundColor: "#000000",
     borderRadius: 10,
+    ...(Platform.OS === 'web' && {
+      maxHeight: '80vh',
+      overflow: 'auto',
+    }),
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 10,
+    ...(Platform.OS === 'web' && {
+      flexWrap: 'wrap',
+      gap: 10,
+    }),
   },
   input: {
     borderWidth: 1,
@@ -226,13 +278,25 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     color: "#ffffffff",
+    ...(Platform.OS === 'web' && {
+      minHeight: 100,
+      resize: 'vertical',
+    }),
   },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  loadingContainer: { 
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center" 
+  },
   centeredContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
-  loginPrompt: { fontSize: 16, color: "#924b4bff", textAlign: "center" },
+  loginPrompt: { 
+    fontSize: 16, 
+    color: "#924b4bff", 
+    textAlign: "center" 
+  },
 });

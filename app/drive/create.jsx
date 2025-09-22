@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Button, StyleSheet, Alert, Platform, Text } from "react-native";
 import { db } from "../../firebaseConfig";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../../auth/authContext";
@@ -35,6 +35,7 @@ export default function CreatePost() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Create New Post</Text>
       <TextInput
         style={styles.input}
         placeholder="Write your motivational quote..."
@@ -59,6 +60,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#000000ff", // matches feed + myFeed
     padding: 20,
     justifyContent: "center",
+    ...(Platform.OS === 'web' && {
+      maxWidth: 600,
+      marginHorizontal: 'auto',
+      width: '100%',
+    }),
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ffffffff",
+    textAlign: "center",
+    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
@@ -69,5 +82,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     color: "#ffffffff",
     fontSize: 16,
+    ...(Platform.OS === 'web' && {
+      minHeight: 120,
+      resize: 'vertical',
+    }),
   },
 });
