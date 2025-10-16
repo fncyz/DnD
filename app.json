@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/DnD.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.y_wniz.dnd"
@@ -21,7 +21,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png",
+      "favicon": "./assets/images/DnD.png",
       "viewport": "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
       "css": "./web/styles.css"
     },
@@ -30,7 +30,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/DnD.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -43,8 +43,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "a7d312ef-a830-4593-8d18-26755d44c9fd"
+        "projectId": "8a851458-a14c-46a8-bf73-fdd86708ab80"
       }
-    }
+    },
+    "owner": "y_wniz"
   }
 }
