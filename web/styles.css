@@ -1,0 +1,95 @@
+/* Global web styles to prevent UI expansion and horizontal overflow */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Prevent horizontal scrolling */
+body {
+  overflow-x: hidden;
+}
+
+/* Ensure all containers respect max-width */
+.container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Text wrapping for long content */
+.text-wrap {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent text from causing horizontal overflow */
+p, div, span, text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Modal positioning for web */
+.modal-overlay {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+/* Ensure buttons don't cause overflow */
+button {
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* Input field constraints */
+input, textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Flexbox constraints */
+.flex-container {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+/* Scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
